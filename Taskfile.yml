@@ -1,0 +1,166 @@
+version: '3'
+
+vars:
+  GOLANGCI_LINT_VERSION: latest
+  GOVULNCHECK_VERSION: latest
+  GOLANGCI_LINT:
+    sh: command -v golangci-lint 2>/dev/null || echo "go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@{{.GOLANGCI_LINT_VERSION}}"
+  BINARY: bin/go-cli-tool-template
+  VERSION:
+    sh: git describe --tags --always --dirty 2>/dev/null || echo dev
+  LDFLAGS: -s -w -X github.com/oxio/go-cli-tool-template/cmd.Version={{.VERSION}}
+
+tasks:
+  default:
+    desc: List available tasks
+    silent: true
+    cmds:
+      - task --list
+
+  # BEGIN TEMPLATE BOOTSTRAP
+  bootstrap:
+    desc: Bootstrap a new repository created from this template
+    interactive: true
+    cmds:
+      - go run ./tools/bootstrap -interactive {{.CLI_ARGS}}
+
+  # END TEMPLATE BOOTSTRAP
+  build:
+    desc: Build the binary into bin/
+    cmds:
+      - go build -ldflags "{{.LDFLAGS}}" -o {{.BINARY}} .
+
+  "build:all":
+    desc: Build binaries for all supported architectures
+    deps:
+      - "build:darwin-amd64"
+      - "build:darwin-arm64"
+      - "build:linux-amd64"
+      - "build:linux-arm64"
+      - "build:linux-arm"
+      - "build:windows-amd64"
+      - "build:windows-arm64"
+
+  "build:darwin-amd64":
+    desc: Build binary for Darwin (macOS) amd64
+    env:
+      GOOS: darwin
+      GOARCH: amd64
+    cmds:
+      - go build -ldflags "{{.LDFLAGS}}" -o {{.BINARY}}-darwin-amd64 .
+
+  "build:darwin-arm64":
+    desc: Build binary for Darwin (macOS) arm64
+    env:
+      GOOS: darwin
+      GOARCH: arm64
+    cmds:
+      - go build -ldflags "{{.LDFLAGS}}" -o {{.BINARY}}-darwin-arm64 .
+
+  "build:linux-amd64":
+    desc: Build binary for Linux amd64
+    env:
+      GOOS: linux
+      GOARCH: amd64
+    cmds:
+      - go build -ldflags "{{.LDFLAGS}}" -o {{.BINARY}}-linux-amd64 .
+
+  "build:linux-arm64":
+    desc: Build binary for Linux arm64
+    env:
+      GOOS: linux
+      GOARCH: arm64
+    cmds:
+      - go build -ldflags "{{.LDFLAGS}}" -o {{.BINARY}}-linux-arm64 .
+
+  "build:linux-arm":
+    desc: Build binary for Linux arm (32-bit)
+    env:
+      GOOS: linux
+      GOARCH: arm
+      GOARM: 7
+    cmds:
+      - go build -ldflags "{{.LDFLAGS}}" -o {{.BINARY}}-linux-arm .
+
+  "build:windows-amd64":
+    desc: Build binary for Windows amd64
+    env:
+      GOOS: windows
+      GOARCH: amd64
+    cmds:
+      - go build -ldflags "{{.LDFLAGS}}" -o {{.BINARY}}-windows-amd64.exe .
+
+  "build:windows-arm64":
+    desc: Build binary for Windows arm64
+    env:
+      GOOS: windows
+      GOARCH: arm64
+    cmds:
+      - go build -ldflags "{{.LDFLAGS}}" -o {{.BINARY}}-windows-arm64.exe .
+
+  test:
+    desc: Run tests
+    cmds:
+      - go test ./...
+
+  cover:
+    desc: Run tests with coverage
+    cmds:
+      - go test -cover ./...
+
+  fmt:
+    desc: Format Go source files in place
+    cmds:
+      - gofmt -w .
+
+  "fmt:check":
+    desc: Check Go source formatting (fails if any file is unformatted)
+    silent: true
+    cmds:
+      - |
+        unformatted=$(gofmt -l .)
+        if [ -n "$unformatted" ]; then
+          echo "$unformatted"
+          echo "Unformatted files listed above; run 'task fmt'."
+          exit 1
+        fi
+
+  vet:
+    desc: Run go vet
+    cmds:
+      - go vet ./...
+
+  lint:
+    desc: Run golangci-lint
+    cmds:
+      - "{{.GOLANGCI_LINT}} run ./..."
+      - task: govulncheck
+
+  govulncheck:
+    desc: Scan dependencies and code for known vulnerabilities
+    cmds:
+      - go run golang.org/x/vuln/cmd/govulncheck@{{.GOVULNCHECK_VERSION}} ./...
+
+  "lint:fix":
+    desc: Run golangci-lint with auto-fixes
+    cmds:
+      - "{{.GOLANGCI_LINT}} run --fix ./..."
+
+  tidy:
+    desc: Tidy module dependencies
+    cmds:
+      - go mod tidy
+
+  check:
+    desc: Run formatting check, vet, lint, build, and tests
+    cmds:
+      - task: "fmt:check"
+      - task: vet
+      - task: lint
+      - task: build
+      - task: test
+
+  clean:
+    desc: Remove build artifacts
+    cmds:
+      - rm -rf bin
