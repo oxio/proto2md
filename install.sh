@@ -8,8 +8,8 @@
 # Edit these variables to customize for your project
 # ============================================================================
 
-GITHUB_REPO="oxio/go-cli-tool-template" # GitHub repository (owner/repo)
-BINARY_NAME="go-cli-tool-template"      # Name of the binary
+GITHUB_REPO="oxio/proto2md" # GitHub repository (owner/repo)
+BINARY_NAME="proto2md"      # Name of the binary
 INSTALL_DIR="/usr/local/bin"         # Default installation directory
 SUPPORTED_OS="darwin linux windows"  # Supported operating systems
 SUPPORTED_ARCH="amd64 arm64 arm"     # Supported architectures

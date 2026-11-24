@@ -3,7 +3,7 @@
 #
 # Binaries for programs and plugins
 bin/
-/go-cli-tool-template
+/proto2md
 *.exe
 *.exe~
 *.dll

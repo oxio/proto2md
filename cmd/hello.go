@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/oxio/go-cli-tool-template/internal/hello"
+	"github.com/oxio/proto2md/internal/hello"
 	"github.com/spf13/cobra"
 )
 
@@ -14,10 +14,10 @@ func newHelloCmd() *cobra.Command {
 		Use:   "hello",
 		Short: "Print a Hello World greeting",
 		Example: `  # Print the default greeting
-  go-cli-tool-template hello
+  proto2md hello
 
   # Print a personalized greeting
-  go-cli-tool-template hello --name Alice`,
+  proto2md hello --name Alice`,
 		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			_, err := fmt.Fprintln(cmd.OutOrStdout(), hello.Greeting(name))

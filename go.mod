@@ -1,4 +1,4 @@
-module github.com/oxio/go-cli-tool-template
+module github.com/oxio/proto2md
 
 go 1.27.4
 

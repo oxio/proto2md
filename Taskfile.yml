@@ -5,10 +5,10 @@ vars:
   GOVULNCHECK_VERSION: latest
   GOLANGCI_LINT:
     sh: command -v golangci-lint 2>/dev/null || echo "go run github.com/golangci/golangci-lint/v2/cmd/golangci-lint@{{.GOLANGCI_LINT_VERSION}}"
-  BINARY: bin/go-cli-tool-template
+  BINARY: bin/proto2md
   VERSION:
     sh: git describe --tags --always --dirty 2>/dev/null || echo dev
-  LDFLAGS: -s -w -X github.com/oxio/go-cli-tool-template/cmd.Version={{.VERSION}}
+  LDFLAGS: -s -w -X github.com/oxio/proto2md/cmd.Version={{.VERSION}}
 
 tasks:
   default:
@@ -17,14 +17,6 @@ tasks:
     cmds:
       - task --list
 
-  # BEGIN TEMPLATE BOOTSTRAP
-  bootstrap:
-    desc: Bootstrap a new repository created from this template
-    interactive: true
-    cmds:
-      - go run ./tools/bootstrap -interactive {{.CLI_ARGS}}
-
-  # END TEMPLATE BOOTSTRAP
   build:
     desc: Build the binary into bin/
     cmds:

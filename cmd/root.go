@@ -10,21 +10,20 @@ import (
 // Version is set at build time via -ldflags.
 var Version = "dev"
 
-// NewRootCmd constructs the root Cobra command for go-cli-tool-template.
+// NewRootCmd constructs the root Cobra command for proto2md.
 func NewRootCmd() *cobra.Command {
 	rootCmd := &cobra.Command{
-		Use:   "go-cli-tool-template",
-		Short: "A template CLI tool written in Go",
-		Long: `go-cli-tool-template is a starter template for building Go CLI tools
-with Cobra, Taskfile, golangci-lint, and GitHub Actions releases.`,
+		Use:   "proto2md",
+		Short: "Tool for converting Protobuf file definitions into Markdown documentation",
+		Long:  "Tool for converting Protobuf file definitions into Markdown documentation",
 		Example: `  # Print a greeting
-  go-cli-tool-template hello
+  proto2md hello
 
   # Print a personalized greeting
-  go-cli-tool-template hello --name Alice
+  proto2md hello --name Alice
 
   # Print the CLI version
-  go-cli-tool-template version`,
+  proto2md version`,
 		SilenceUsage:  true,
 		SilenceErrors: true,
 	}

@@ -38,7 +38,7 @@ func TestCLIVersion(t *testing.T) {
 	if err := root.Execute(); err != nil {
 		t.Fatalf("version failed: %v", err)
 	}
-	if !strings.Contains(out.String(), "go-cli-tool-template ") {
+	if !strings.Contains(out.String(), "proto2md ") {
 		t.Errorf("unexpected version output: %q", out.String())
 	}
 }
@@ -55,9 +55,9 @@ func TestCLIHelpIncludesExamples(t *testing.T) {
 	got := out.String()
 	for _, want := range []string{
 		"Examples:",
-		"go-cli-tool-template hello",
-		"go-cli-tool-template hello --name Alice",
-		"go-cli-tool-template version",
+		"proto2md hello",
+		"proto2md hello --name Alice",
+		"proto2md version",
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("root help output missing %q:\n%s", want, got)
@@ -75,8 +75,8 @@ func TestCLIHelpIncludesExamples(t *testing.T) {
 	got = out.String()
 	for _, want := range []string{
 		"Examples:",
-		"go-cli-tool-template hello",
-		"go-cli-tool-template hello --name Alice",
+		"proto2md hello",
+		"proto2md hello --name Alice",
 	} {
 		if !strings.Contains(got, want) {
 			t.Errorf("hello help output missing %q:\n%s", want, got)
